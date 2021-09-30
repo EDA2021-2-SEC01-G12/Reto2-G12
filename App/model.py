@@ -40,16 +40,27 @@ los mismos.
 # Construccion de modelos
 
 def initCatalog():
-    catalog={'authors':None,'artworks':None,'medium':None}
-    catalog['medium']=mp.newMap(10000,maptype='CHAINING',)
+    catalog={'artistas':None,'obras':None,'medio':None}
+    catalog['artistas']=lt.newList('ARRAY_LIST',compareArtIds)
+    catalog['obras']=lt.newList('ARRAY_LIST',compareArtIds)
+    catalog['medio']=mp.newMap(1,maptype='CHAINING',loadfactor=4,comparefunction=compareMapMedium)
+    return catalog
 
 # Funciones para agregar informacion al catalogo
 
-def addAuthors(catalog, author):
-    lt.addLast(catalog["artistas"],author)
+'''def addAuthors(catalog, author):
+    lt.addLast(catalog['books'], book) 
+    mp.put(catalog['bookIds'], book['goodreads_book_id'], book) 
+    authors = book['authors'].split(",")  
+    for author in authors: 
+        addBookAuthor(catalog, author.strip(), book) 
+    addBookYear(catalog, book)'''
     
+def addAuthors(catalog,author):
+    lt.addLast(catalog['artistas'],author)
+
 def addArtworks (catalog,artwork):
-    lt.addLast(catalog["obras"],artwork)
+    lt.addLast(catalog['obras'],artwork)
 
 
 # Funciones para creacion de datos
@@ -63,6 +74,14 @@ def compareMapMedium(id,entry):
     if (int(id) == int(identry)):
         return 0
     elif (int(id) > int(identry)):
+        return 1
+    else:
+        return -1
+
+def compareArtIds(id1, id2):
+    if (id1 == id2):
+        return 0
+    elif id1 > id2:
         return 1
     else:
         return -1

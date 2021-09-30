@@ -25,6 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
+from DISClib.ADT import map as mp
 
 
 """
@@ -49,10 +50,13 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-
+        catalogo = controller.initCatalog()
+        controller.addAuthors(catalogo)
+        controller.addArtworks(catalogo)
+        print(catalogo)
     elif int(inputs[0]) == 2:
-        pass
-
+        cat=mp.newMap()
+        print(cat)
     else:
         sys.exit(0)
 sys.exit(0)
