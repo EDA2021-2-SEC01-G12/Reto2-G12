@@ -41,7 +41,7 @@ los mismos.
 
 def initCatalog():
     catalog={'authors':None,'artworks':None,'medium':None}
-    catalog['medium']=mp.newMap(10000,maptype='CHAINING')
+    catalog['medium']=mp.newMap(10000,maptype='CHAINING',)
 
 # Funciones para agregar informacion al catalogo
 
@@ -57,5 +57,14 @@ def addArtworks (catalog,artwork):
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+def compareMapMedium(id,entry):
+    identry =  me.getKey(entry)
+    if (int(id) == int(identry)):
+        return 0
+    elif (int(id) > int(identry)):
+        return 1
+    else:
+        return -1
 
 # Funciones de ordenamiento
