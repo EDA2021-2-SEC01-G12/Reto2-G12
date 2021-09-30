@@ -39,7 +39,18 @@ los mismos.
 
 # Construccion de modelos
 
+def initCatalog():
+    catalog={'authors':None,'artworks':None,'medium':None}
+    catalog['medium']=mp.newMap(10000,maptype='CHAINING')
+
 # Funciones para agregar informacion al catalogo
+
+def addAuthors(catalog, author):
+    lt.addLast(catalog["artistas"],author)
+    
+def addArtworks (catalog,artwork):
+    lt.addLast(catalog["obras"],artwork)
+
 
 # Funciones para creacion de datos
 
