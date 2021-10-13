@@ -41,9 +41,9 @@ los mismos.
 
 def initCatalog():
     catalog={'artistas':None,'obras':None,'medio':None}
-    catalog['artistas']=lt.newList('ARRAY_LIST',compareArtIds)
-    catalog['obras']=lt.newList('ARRAY_LIST',compareArtIds)
-    catalog['medio']=mp.newMap(1,maptype='CHAINING',loadfactor=4,comparefunction=compareMapMedium)
+    catalog['artistas']=mp.newMap(1949,maptype="PROBING")
+    catalog['obras']=mp.newMap(837,maptype="PROBING")
+    catalog['medio']=mp.newMap(1,maptype="CHAINING",loadfactor=4)
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -57,10 +57,16 @@ def initCatalog():
     addBookYear(catalog, book)'''
     
 def addAuthors(catalog,author):
-    lt.addLast(catalog['artistas'],author)
+    id=author["ConstituentID"]
+    mp.put(catalog["artistas"],id,author)
 
 def addArtworks (catalog,artwork):
-    lt.addLast(catalog['obras'],artwork)
+    id=artwork["ObjectID"]
+    mp.put(catalog["obras"],id,artwork)
+
+def addMedium(catalog,artwork):
+    med=artwork["Medium"]
+    mp.put(catalog["medio"],med,artwork)
 
 
 # Funciones para creacion de datos

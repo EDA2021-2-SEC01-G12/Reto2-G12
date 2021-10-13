@@ -48,6 +48,7 @@ def addArtworks (catalog):
     art= csv.DictReader (open(artworksFile, encoding="utf-8"))
     for line in art:
         model.addArtworks(catalog,line)
+        model.addMedium(catalog,line)
 
 # Funciones de ordenamiento
 

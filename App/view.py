@@ -27,7 +27,8 @@ from DISClib.ADT import list as lt
 assert cf
 from DISClib.ADT import map as mp
 
-
+default_limit = 1000 
+sys.setrecursionlimit(default_limit*10)
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
@@ -53,7 +54,7 @@ while True:
         catalogo = controller.initCatalog()
         controller.addAuthors(catalogo)
         controller.addArtworks(catalogo)
-        print(catalogo)
+        print(mp.keySet(catalogo["obras"]))
     elif int(inputs[0]) == 2:
         cat=mp.newMap()
         print(cat)
