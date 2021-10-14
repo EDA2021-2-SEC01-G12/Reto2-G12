@@ -40,9 +40,10 @@ los mismos.
 # Construccion de modelos
 
 def initCatalog():
-    catalog={'artistas':None,'obras':None,'medio':None,'nacionalidad':None}
+    catalog={'artistas':None,'obras':None,"obrasArtista":None,'medio':None,'nacionalidad':None}
     catalog['artistas']=mp.newMap(1949,maptype="PROBING",loadfactor=0.5)
     catalog['obras']=mp.newMap(837,maptype="PROBING",loadfactor=0.5)
+    catalog["obrasArtista"]=mp.newMap(maptype="CHAINING",loadfactor=1.5)
     catalog['medio']=mp.newMap(maptype="CHAINING",loadfactor=1.5)
     catalog['nacionalidad']=mp.newMap(maptype='CHAINING',loadfactor=1.5)
     return catalog
@@ -58,7 +59,7 @@ def initCatalog():
     addBookYear(catalog, book)'''
     
 def addAuthors(catalog,author):
-    id=author["ConstituentID"]
+    id=" "+(author["ConstituentID"].strip())+" "
     mp.put(catalog["artistas"],id,author)
 
 def addArtworks (catalog,artwork):
@@ -71,12 +72,37 @@ def addMedium(catalog,artwork):
 
 def addNacionality(catalog,artist):
     nat=artist['Nationality']
-    mp.put(catalog['nacionalidad'],nat,artist)
+    mp.put(catalog["nacionalidad"],nat,artist)
+
+def addArtworkOfArtist(catalog,obra):
+    IDs=str(obra["ConstituentID"]).replace("[","").replace("]","").replace(" ","").replace(","," , ").split(",")
+    j=0
+    while j!=len(IDs):
+        mp.put(catalog["obrasArtista"],IDs[j],obra)
+        j+=1
 
 
 # Funciones para creacion de datos
 
-# Funciones de consulta
+# Funciones de consulta   
+
+def nacionalidadMasObras(catalogo,nacionalidad):
+    obrasMasNacion=lt.newList('ARRAY_LIST')
+    authors=catalogo['artistas']
+    autoresIDs=mp.keySet(authors)
+    i=1
+    while i != lt.size(autoresIDs):
+        id=lt.getElement(autoresIDs,i)
+        autor=mp.get(authors,id)
+        if autor['value']['Nationality']==nacionalidad:
+            obras=mp.get(catalogo["obrasArtista"],autor['value']['ConstituentID'])
+            print(obras)
+            j=1
+            while j != mp.size(obras):
+                lt.addLast(obrasMasNacion,j)
+                j+=1
+        i+=1
+    return obrasMasNacion
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -98,3 +124,7 @@ def compareArtIds(id1, id2):
         return -1
 
 # Funciones de ordenamiento
+
+
+
+''''''

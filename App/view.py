@@ -26,6 +26,7 @@ import controller
 from DISClib.ADT import list as lt
 assert cf
 from DISClib.ADT import map as mp
+import time
 
 default_limit = 1000 
 sys.setrecursionlimit(default_limit*10)
@@ -39,9 +40,9 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- Listar obras cuyos autores sean de una nacionalidad especifica")
 
-catalog = None
+catalogo = None
 
 """
 Menu principal
@@ -52,12 +53,16 @@ while True:
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         catalogo = controller.initCatalog()
+        start_time = time.process_time()
         controller.addAuthors(catalogo)
         controller.addArtworks(catalogo)
-        print(mp.keySet(catalogo["nacionalidad"]))
+        stop_time= time.process_time()
+        timeSort= (stop_time-start_time)*1000
+        print(str(timeSort)+'milisegundos')
+        #print(catalogo["artistas"])
     elif int(inputs[0]) == 2:
-        cat=mp.newMap()
-        print(cat)
+        nac=input("Ingrese la nacionalidad a consultar:\n")
+        obrasMas=controller.nacionalidadMasObras(catalogo,nac)
     else:
         sys.exit(0)
 sys.exit(0)

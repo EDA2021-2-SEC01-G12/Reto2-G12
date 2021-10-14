@@ -50,7 +50,11 @@ def addArtworks (catalog):
     for line in art:
         model.addArtworks(catalog,line)
         model.addMedium(catalog,line)
+        model.addArtworkOfArtist(catalog,line)
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def nacionalidadMasObras(catalogo,nacionalidad):
+    model.nacionalidadMasObras(catalogo,nacionalidad)
