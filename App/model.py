@@ -59,7 +59,7 @@ def initCatalog():
     addBookYear(catalog, book)'''
     
 def addAuthors(catalog,author):
-    id=" "+(author["ConstituentID"].strip())+" "
+    id=(author["ConstituentID"].replace(" ",""))
     mp.put(catalog["artistas"],id,author)
 
 def addArtworks (catalog,artwork):
@@ -75,7 +75,7 @@ def addNacionality(catalog,artist):
     mp.put(catalog["nacionalidad"],nat,artist)
 
 def addArtworkOfArtist(catalog,obra):
-    IDs=str(obra["ConstituentID"]).replace("[","").replace("]","").replace(" ","").replace(","," , ").split(",")
+    IDs=str(obra["ConstituentID"]).replace("[","").replace("]","").replace(" ","").split(",")
     j=0
     while j!=len(IDs):
         mp.put(catalog["obrasArtista"],IDs[j],obra)
@@ -93,14 +93,12 @@ def nacionalidadMasObras(catalogo,nacionalidad):
     i=1
     while i != lt.size(autoresIDs):
         id=lt.getElement(autoresIDs,i)
-        autor=mp.get(authors,id)
-        if autor['value']['Nationality']==nacionalidad:
-            obras=mp.get(catalogo["obrasArtista"],autor['value']['ConstituentID'])
-            print(obras)
-            j=1
-            while j != mp.size(obras):
-                lt.addLast(obrasMasNacion,j)
-                j+=1
+        autor=mp.get(authors,id)['value']
+        if autor['Nationality']==nacionalidad:
+            obras=(mp.get(catalogo["obrasArtista"],id))
+            if obras!=None:
+                obras=(mp.get(catalogo["obrasArtista"],id))['value']
+                lt.addLast(obrasMasNacion,obras)
         i+=1
     return obrasMasNacion
 

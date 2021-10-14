@@ -57,4 +57,4 @@ def addArtworks (catalog):
 # Funciones de consulta sobre el catálogo
 
 def nacionalidadMasObras(catalogo,nacionalidad):
-    model.nacionalidadMasObras(catalogo,nacionalidad)
+    return model.nacionalidadMasObras(catalogo,nacionalidad)
