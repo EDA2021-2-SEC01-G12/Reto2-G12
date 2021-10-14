@@ -42,6 +42,7 @@ def addAuthors(catalog):
     autFile = csv.DictReader(open(authorsFile, encoding='utf-8'))
     for author in autFile:
         model.addAuthors(catalog,author)
+        model.addNacionality(catalog,author)
 
 def addArtworks (catalog):
     artworksFile = cf.data_dir + "Artworks-utf8-small.csv"

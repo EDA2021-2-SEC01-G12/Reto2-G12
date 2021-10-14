@@ -40,10 +40,11 @@ los mismos.
 # Construccion de modelos
 
 def initCatalog():
-    catalog={'artistas':None,'obras':None,'medio':None}
-    catalog['artistas']=mp.newMap(1949,maptype="PROBING")
-    catalog['obras']=mp.newMap(837,maptype="PROBING")
-    catalog['medio']=mp.newMap(1,maptype="CHAINING",loadfactor=4)
+    catalog={'artistas':None,'obras':None,'medio':None,'nacionalidad':None}
+    catalog['artistas']=mp.newMap(1949,maptype="PROBING",loadfactor=0.5)
+    catalog['obras']=mp.newMap(837,maptype="PROBING",loadfactor=0.5)
+    catalog['medio']=mp.newMap(maptype="CHAINING",loadfactor=1.5)
+    catalog['nacionalidad']=mp.newMap(maptype='CHAINING',loadfactor=1.5)
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -67,6 +68,10 @@ def addArtworks (catalog,artwork):
 def addMedium(catalog,artwork):
     med=artwork["Medium"]
     mp.put(catalog["medio"],med,artwork)
+
+def addNacionality(catalog,artist):
+    nat=artist['Nationality']
+    mp.put(catalog['nacionalidad'],nat,artist)
 
 
 # Funciones para creacion de datos

@@ -54,7 +54,7 @@ while True:
         catalogo = controller.initCatalog()
         controller.addAuthors(catalogo)
         controller.addArtworks(catalogo)
-        print(mp.keySet(catalogo["obras"]))
+        print(mp.keySet(catalogo["nacionalidad"]))
     elif int(inputs[0]) == 2:
         cat=mp.newMap()
         print(cat)
