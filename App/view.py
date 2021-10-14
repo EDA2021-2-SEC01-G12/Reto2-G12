@@ -59,7 +59,6 @@ while True:
         stop_time= time.process_time()
         timeSort= (stop_time-start_time)*1000
         print(str(timeSort)+'milisegundos')
-        print(mp.keySet(catalogo["nacionalidad"]),catalogo["obrasArtista"])
     elif int(inputs[0]) == 2:
         nac=input("Ingrese la nacionalidad a consultar:\n")
         obrasMas=controller.nacionalidadMasObras(catalogo,nac)

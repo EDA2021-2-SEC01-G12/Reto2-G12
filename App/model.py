@@ -45,18 +45,10 @@ def initCatalog():
     catalog['obras']=mp.newMap(837,maptype="PROBING",loadfactor=0.5)
     catalog["obrasArtista"]=mp.newMap(maptype="CHAINING",loadfactor=1.5)
     catalog['medio']=mp.newMap(maptype="CHAINING",loadfactor=1.5)
-    catalog['nacionalidad']=mp.newMap(maptype='CHAINING',loadfactor=1.5)
+    catalog['nacionalidad']=mp.newMap(maptype='CHAINING',loadfactor=8.0)
     return catalog
 
 # Funciones para agregar informacion al catalogo
-
-'''def addAuthors(catalog, author):
-    lt.addLast(catalog['books'], book) 
-    mp.put(catalog['bookIds'], book['goodreads_book_id'], book) 
-    authors = book['authors'].split(",")  
-    for author in authors: 
-        addBookAuthor(catalog, author.strip(), book) 
-    addBookYear(catalog, book)'''
     
 def addAuthors(catalog,author):
     id=(author["ConstituentID"].replace(" ",""))
