@@ -107,9 +107,19 @@ def masNacionalidad(catalogo):
     return obrasNacionalidad'''
 
 def masNacionalidad(catalogo):
-    authors=catalogo['artistas']
-    autoresIDs=mp.keySet(authors)
-    
+    autoresIDs=catalogo['artistas']
+    artworks=mp.keySet(catalogo["obras"])
+    nacObras=mp.newMap(837,maptype="CHAINING")
+    i=0
+    while i != mp.size(catalogo["obras"]):
+        obra=lt.getElement(artworks,i)
+        ids=(mp.get(catalogo["obras"],obra)["value"]["ConstituentID"]).replace("[","").replace("]","").replace(" ","").split(",")
+        for j in ids:
+            nac=mp.get(autoresIDs,j)["value"]["Nationality"]
+            mp.put(nacObras,nac,mp.get(catalogo["obras"],obra))
+            print(nac)
+        i+=1
+    return nacObras
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 

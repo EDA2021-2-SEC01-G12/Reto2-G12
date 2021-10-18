@@ -44,7 +44,7 @@ def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- Listar obras cuyos autores sean de una nacionalidad especifica")
-    print("5- Nacionalidad mas obras")
+    print("5- Nacionalidad con mas obras")
 
 catalogo = None
 
@@ -69,7 +69,7 @@ while True:
         print(obrasMas)
     elif int(inputs[0]) == 5:
         lista=masNacionalidad(catalogo)
-        print(mp.get(lista,"French"))
+        
     else:
         sys.exit(0)
 sys.exit(0)
