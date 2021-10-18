@@ -69,7 +69,7 @@ while True:
         print(obrasMas)
     elif int(inputs[0]) == 5:
         lista=masNacionalidad(catalogo)
-        
+        print(lista[1])
     else:
         sys.exit(0)
 sys.exit(0)

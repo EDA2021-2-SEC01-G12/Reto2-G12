@@ -1,5 +1,5 @@
-Req #2 Mateo Cote Canal - m.cotec@uniandes.edu.co - 202022609 
-Req #3 Diego Acosta Corredor - da.acostac1@uniandes.edu.co - 202110516
+Req #3 Mateo Cote Canal - m.cotec@uniandes.edu.co - 202022609 
+Req #4 Diego Acosta Corredor - da.acostac1@uniandes.edu.co - 202110516
 
 #ISIS1225 - Librerias de soporte
 
