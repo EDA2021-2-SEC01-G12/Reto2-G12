@@ -58,3 +58,6 @@ def addArtworks (catalog):
 
 def nacionalidadMasObras(catalogo,nacionalidad):
     return model.nacionalidadMasObras(catalogo,nacionalidad)
+
+def masNacionalidad(catalogo):
+    return model.masNacionalidad(catalogo)

@@ -30,6 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as ms
 assert cf
 
 """
@@ -78,7 +79,7 @@ def addArtworkOfArtist(catalog,obra):
 
 # Funciones de consulta   
 
-def nacionalidadMasObras(catalogo,nacionalidad):
+'''def nacionalidadMasObras(catalogo,nacionalidad):
     obrasMasNacion=lt.newList('ARRAY_LIST')
     authors=catalogo['artistas']
     autoresIDs=mp.keySet(authors)
@@ -93,6 +94,22 @@ def nacionalidadMasObras(catalogo,nacionalidad):
                 lt.addLast(obrasMasNacion,obras)
         i+=1
     return obrasMasNacion
+
+def masNacionalidad(catalogo):
+    nacionalidadesKeys=mp.keySet(catalogo["nacionalidad"])
+    obrasNacionalidad=mp.newMap(lt.size(nacionalidadesKeys),maptype="PROBING")
+    i=0
+    while i !=lt.size(nacionalidadesKeys):
+        nac=lt.getElement(nacionalidadesKeys,i)
+        obras=nacionalidadMasObras(catalogo,nac)
+        mp.put(obrasNacionalidad,nac,obras)
+        i+=1
+    return obrasNacionalidad'''
+
+def masNacionalidad(catalogo):
+    authors=catalogo['artistas']
+    autoresIDs=mp.keySet(authors)
+    
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -112,6 +129,8 @@ def compareArtIds(id1, id2):
         return 1
     else:
         return -1
+
+#def cmpNacionalidadesKeys(catalogo,nac1,nac2):
 
 # Funciones de ordenamiento
 
