@@ -185,6 +185,9 @@ def obrasNacionalidades(catalogo):
         tup=(key,num)
         lt.addLast(natioNum,tup)
     natioNum=ms.sort(natioNum,cmpNacionalidades)
+    mas=lt.getElement(natioNum,1)[0]
+    listaMas=me.getValue(mp.get(nacionalidades,mas))
+    listaMas=sa.sort(listaMas,cmpObrasPorTitulo)
     return nacionalidades,natioNum
 
 def transportarObrasDepartamento(catalogo,departamento):
@@ -229,6 +232,14 @@ def cmpNacionalidades(nac1,nac2):
     nacio1=int(nac1[1])
     nacio2=int(nac2[1])
     if nacio1>nacio2:
+        return True
+    else:
+        return False
+
+def cmpObrasPorTitulo(obra1,obra2):
+    obra1Titulo=obra1['Title']
+    obra2Titulo=obra2['Title']
+    if obra1Titulo < obra2Titulo:
         return True
     else:
         return False
