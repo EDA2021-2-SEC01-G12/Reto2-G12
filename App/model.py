@@ -45,8 +45,10 @@ def initCatalog():
     catalog['artistas']=mp.newMap(1949,maptype="PROBING",loadfactor=0.5)
     catalog['obras']=mp.newMap(837,maptype="PROBING",loadfactor=0.5)
     catalog["obrasArtista"]=mp.newMap(maptype="CHAINING",loadfactor=1.5)
-    catalog['medio']=mp.newMap(maptype="CHAINING",loadfactor=1.5)
+    catalog['medio']=mp.newMap(maptype="CHAINING",loadfactor=8.0)
     catalog['nacionalidad']=mp.newMap(maptype='CHAINING',loadfactor=8.0)
+    catalog['fechaNacimiento']=mp.newMap(maptype="CHAINING",loadfactor=8.0)
+    catalog['fechaAdquisicion']=mp.newMap(maptype="CHAINING",loadfactor=8.0)
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -81,7 +83,7 @@ def addNacionality(catalog,artist):
 
 def addArtworkOfArtist(catalog,obra):
     IDs=str(obra["ConstituentID"]).replace("[","").replace("]","").replace(" ","").split(",")
-    j=0
+    j=1
     while j!=len(IDs):
         if mp.contains(catalog['obrasArtista'],IDs[j])==False:
             obras=lt.newList("ARRAY_LIST")
@@ -92,10 +94,70 @@ def addArtworkOfArtist(catalog,obra):
             lt.addLast(obras,obra)
         j+=1
 
+def addArtistByBeginDate(catalogo,artista):
+    fecha=artista['BeginDate']
+    if mp.contains(catalogo['fechaNacimiento'],fecha)==False:
+        artistas=lt.newList("ARRAY_LIST")
+        lt.addLast(artistas,artista['ConstituentID'])
+        mp.put(catalogo['fechaNacimiento'],fecha,artistas)
+    else:
+        listaArtistas=mp.get(catalogo['fechaNacimiento'],fecha)['value']
+        lt.addLast(listaArtistas,artista['ConstituentID'])
+
+def addArtworksByDateAquired(catalogo,artwork):
+    date=artwork['DateAcquired']
+    if mp.contains(catalogo['fechaAdquisicion'],date)==False:
+        obras=lt.newList("ARRAY_LIST")
+        lt.addLast(obras,artwork['ObjectID'])
+        mp.put(catalogo['fechaAdquisicion'],date,obras)
+    else:
+        listaArtistas=mp.get(catalogo['fechaAdquisicion'],date)['value']
+        lt.addLast(listaArtistas,artwork['ObjectID'])
 
 # Funciones para creacion de datos
 
 # Funciones de consulta   
+
+def artistasNacidosEnRango(catalogo,fechaInicio,fechaFin):
+    i=1
+    artistas=lt.newList("ARRAY_LIST")
+    llaves=mp.keySet(catalogo['fechaNacimiento'])
+    while i!=mp.size(catalogo['fechaNacimiento']):
+        if fechaFin>=int(lt.getElement(llaves,i))>=fechaInicio:
+            ids=mp.get(catalogo['fechaNacimiento'],lt.getElement(llaves,i))['value']
+            j=0
+            while j!=lt.size(ids):
+                autor=lt.getElement(ids,j)
+                datosAutor=mp.get(catalogo['artistas'],autor)['value']
+                lt.addLast(artistas,datosAutor)
+                j+=1
+        i+=1
+    artistas=ms.sort(artistas,cmpArtistasBeginDate)
+    return artistas
+
+def obrasPorDateAcquired(catalogo,fechaInicio,fechaFin):
+    fechaInicio=int(fechaInicio.replace("-","")) 
+    fechaFin=int(fechaFin.replace("-",""))
+    obras=lt.newList("ARRAY_LIST")
+    llaves=mp.keySet(catalogo['fechaAdquisicion'])
+    i=1
+    while i!=mp.size(catalogo['fechaAdquisicion']):
+        if lt.getElement(llaves,i)!="":
+            fechaAdq=int(lt.getElement(llaves,i).replace("-",""))
+        else:
+            fechaAdq=0
+        if fechaInicio<=fechaAdq<=fechaFin:
+            ids=mp.get(catalogo['fechaAdquisicion'],lt.getElement(llaves,i))['value']
+            j=0
+            while j!=lt.size(ids):
+                obra=lt.getElement(ids,j)
+                datosObra=mp.get(catalogo['obras'],obra)['value']
+                lt.addLast(obras,datosObra)
+                j+=1
+        i+=1
+    obras=ms.sort(obras,cmpObrasDateAquired)
+    return obras
+
 '''
 def nacionalidadMasObras(catalogo,nacionalidad):
     obrasMasNacion=lt.newList('ARRAY_LIST')
@@ -148,37 +210,61 @@ def masNacionalidad(catalogo):
 '''
 
 def obrasNacionalidades(catalogo):
-    autores=catalogo["artistas"]
-    nacionalidades=mp.newMap(maptype="PROBING")
-    obrasArtistas=catalogo["obrasArtista"]
-    idsAutores=mp.keySet(obrasArtistas)
-    i=0
+    nacionalidades=mp.newMap(maptype="CHAINING")
+    idsAutores=mp.keySet(catalogo["obrasArtista"])
+    i=1
     while i!=lt.size(idsAutores):
         autor=lt.getElement(idsAutores,i)
-        nac=mp.get(autores,autor)["value"]["Nationality"]
-        obras=mp.get(obrasArtistas,autor)['value']
+        nac=mp.get(catalogo["artistas"],autor)["value"]["Nationality"]
+        obras=mp.get(catalogo["obrasArtista"],autor)['value']
         if mp.contains(nacionalidades,nac)==False:
             obrasNac=lt.newList("ARRAY_LIST")
             for a in obras:
-                lt.addLast(obrasNac,a)
+                if lt.isPresent(obrasNac,a)==0:
+                    lt.addLast(obrasNac,a)
             mp.put(nacionalidades,nac,obrasNac)
         else:
             listaDeObras=mp.get(nacionalidades,nac)['value']
             for b in obras:
-                lt.addLast(listaDeObras,b)
+                if lt.isPresent(listaDeObras,b)==0:
+                    lt.addLast(listaDeObras,b)
         i+=1
     nac=mp.keySet(nacionalidades)
-    j=0
+    j=1
     masNac=lt.newList("ARRAY_LIST")
     while j!=lt.size(nac):
         nacActual=lt.getElement(nac,j)
         num=lt.size(mp.get(nacionalidades,nacActual)['value'])
         lt.addLast(masNac,(nacActual,num))
         j+=1
-    #masNac=ms.sort(masNac)
+    masNac=ms.sort(masNac,cmpNacionalidades)
     return nacionalidades,masNac
+'''
+
+def obrasNacionalidades(catalogo):
+    i=1
+    while i!=mp.size(catalogo['obras']):
+        pass
+'''
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+def cmpArtistasBeginDate(artista1,artista2):
+    artista1=int(artista1["BeginDate"])
+    artista2=int(artista2["BeginDate"])
+    if artista1 < artista2:
+        return True
+    else:
+        return False
+
+def cmpObrasDateAquired(artwork1,artwork2):
+    art1=int(artwork1['DateAcquired'].replace("-",""))
+    art2=int(artwork2['DateAcquired'].replace("-",""))
+    if art1 < art2:
+        return True
+    else:
+        return False
 
 def compareMapMedium(id,entry):
     identry =  me.getKey(entry)
@@ -197,7 +283,13 @@ def compareArtIds(id1, id2):
     else:
         return -1
 
-#def cmpNacionalidadesKeys(catalogo,nac1,nac2):
+def cmpNacionalidades(nac1):
+    nacio1=int(nac1[0][1])
+    nacio2=int(nac1[0][1])
+    if nacio1>nacio2:
+        return True
+    else:
+        return False
 
 # Funciones de ordenamiento
 

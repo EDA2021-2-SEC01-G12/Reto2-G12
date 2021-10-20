@@ -43,6 +43,7 @@ def addAuthors(catalog):
     for author in autFile:
         model.addAuthors(catalog,author)
         model.addNacionality(catalog,author)
+        model.addArtistByBeginDate(catalog,author)
 
 def addArtworks (catalog):
     artworksFile = cf.data_dir + "Artworks-utf8-small.csv"
@@ -51,10 +52,17 @@ def addArtworks (catalog):
         model.addArtworks(catalog,line)
         model.addMedium(catalog,line)
         model.addArtworkOfArtist(catalog,line)
+        model.addArtworksByDateAquired(catalog,line)
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def artistasNacidosEnRango(catalogo,fechaInicio,fechaFin):
+    return model.artistasNacidosEnRango(catalogo,fechaInicio,fechaFin)
+
+def obrasPorDateAcquired(catalogo,fechaInicio,fechaFin):
+    return model.obrasPorDateAcquired(catalogo,fechaInicio,fechaFin)
 
 def nacionalidadMasObras(catalogo,nacionalidad):
     return model.nacionalidadMasObras(catalogo,nacionalidad)
