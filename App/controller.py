@@ -53,6 +53,7 @@ def addArtworks (catalog):
         model.addMedium(catalog,line)
         model.addArtworkOfArtist(catalog,line)
         model.addArtworksByDateAquired(catalog,line)
+        model.addDepartment(catalog,line)
 
 # Funciones de ordenamiento
 
@@ -67,8 +68,8 @@ def obrasPorDateAcquired(catalogo,fechaInicio,fechaFin):
 def nacionalidadMasObras(catalogo,nacionalidad):
     return model.nacionalidadMasObras(catalogo,nacionalidad)
 
-def masNacionalidad(catalogo):
-    return model.masNacionalidad(catalogo)
-
 def obrasNacionalidades(catalogo):
     return model.obrasNacionalidades(catalogo)
+
+def transportarObrasDepartamento(catalogo,departamento):
+    return model.transportarObrasDepartamento(catalogo,departamento)

@@ -26,6 +26,7 @@ import controller
 from DISClib.ADT import list as lt
 assert cf
 from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
 import time
 
 default_limit = 1000 
@@ -37,9 +38,6 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
-def masNacionalidad(catalogo):
-    return controller.masNacionalidad(catalogo)
-
 def obrasNacionalidades(catalogo):
     return controller.obrasNacionalidades(catalogo)
 
@@ -49,12 +47,16 @@ def artistasNacidosEnRango(catalogo,fechaInicio,fechaFin):
 def obrasPorDateAcquired(catalogo,fechaInicio,fechaFin):
     return controller.obrasPorDateAcquired(catalogo,fechaInicio,fechaFin)
 
+def transportarObrasDepartamento(catalogo,departamento):
+    return controller.transportarObrasDepartamento(catalogo,departamento)
+
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- Artistas nacidos en un rango de años especifico")
     print("3- Obras adquiridas por el museo en un rango de años especifico")
     print("5- Nacionalidad con mas obras")
+    print("6. Consultar costo de transporte de las obras de un departamento especifico")
 
 def printObrasMasNacionalidad(catalogo):
     nacionalidades=mp.keySet(catalogo)
@@ -67,9 +69,9 @@ def printObrasMasNacionalidad(catalogo):
 
 def printArtistasEnRango(sortedArtist):
     i=1
-    j=-4
+    j=lt.size(sortedArtist)-2
     artistas=True
-    print("Los primeros y últimos tres artistas dentro de ese rango son: \n_______________________________\n")
+    print("Los primeros y últimos tres artistas dentro de ese rango son: \n_________________________________________________________________________________________________________________________\n")
     while artistas:
         if i!=4:
             artista=lt.getElement(sortedArtist,i)
@@ -77,7 +79,7 @@ def printArtistasEnRango(sortedArtist):
         else:
             artista=lt.getElement(sortedArtist,j)
             j+=1
-            if j==-1:
+            if j==lt.size(sortedArtist)+1:
                 artistas=False
         nombre,genero,nacionalidad,nacido,fallece=artista["DisplayName"],artista["Gender"],artista["Nationality"],artista["BeginDate"],artista["EndDate"]
         if nacido=="0":
@@ -88,22 +90,20 @@ def printArtistasEnRango(sortedArtist):
             genero="No reporta"
         if nacionalidad=="":
             nacionalidad="Desconocida"
-        print("Nombre: "+nombre+"\nGenero: "+genero+"\nFecha de nacimiento: "+nacido+"\nNacionalidad: "+nacionalidad+"\nFecha de fallemiento: "+fallece+"\n_______________________________\n")
+        print("- Nombre: "+nombre+"\n- Genero: "+genero+"\n- Fecha de nacimiento: "+nacido+"\n- Nacionalidad: "+nacionalidad+"\n- Fecha de fallemiento: "+fallece+"\n_________________________________________________________________________________________________________________________\n")
 
 def printArtworksResults(sortedArtworks):
     compradas=0
-    z=1
-    while z!=lt.size(sortedArtworks):
-        credit=lt.getElement(sortedArtworks,z)["CreditLine"]
+    for ob in lt.iterator(sortedArtworks):
+        credit=ob["CreditLine"]
         if credit!="":
             if "purchase" in (str(credit)).lower():
                 compradas+=1
-        z+=1
     i=1
-    j=-4
+    j=lt.size(sortedArtworks)-2
     obras=True
     print("El número de obras que fueron compradas por el museo son ",compradas)
-    print("Las primeras y últimas tres obras dentro de ese rango son: \n_______________________________\n")
+    print("Las primeras y últimas tres obras dentro de ese rango son: \n_________________________________________________________________________________________________________________________\n")
     while obras:
         if i!=4:
             obra=lt.getElement(sortedArtworks,i)
@@ -111,36 +111,66 @@ def printArtworksResults(sortedArtworks):
         else:
             obra=lt.getElement(sortedArtworks,j)
             j+=1
-            if j==-1:
+            if j==lt.size(sortedArtworks)+1:
                 obras=False
         nombresArtista=[]
-        idArtistasActual=obra["ConstituentID"].replace("[","").replace("]","").replace(",",",").split(",")
+        idArtistasActual=obra["ConstituentID"].replace("[","").replace("]","").replace(" ","").split(",")
         q=0
         while q!=len(idArtistasActual):
-            nombre=mp.get(catalogo['artistas'],idArtistasActual[q])['value']['DisplayName']
+            nombre=me.getValue(mp.get(catalogo['artistas'],idArtistasActual[q]))['DisplayName']
             nombresArtista.append(nombre)
             q+=1
             nombres=", ".join(nombresArtista)
-        titulo,fecha,medio,dimensiones=obra["Title"],obra["Date"],obra["Medium"],obra["Dimensions"]
+        titulo,fecha,medio,dimensiones,dateAc=obra["Title"],obra["Date"],obra["Medium"],obra["Dimensions"],obra['DateAcquired']
         if fecha=="":
             fecha="No se conoce la fecha de creación"
         if medio=="":
             medio="No se conoce el medio"
         if dimensiones=="":
             dimensiones="No se conocen las dimensiones de la obras"
-        print("Titulo: "+titulo+"\nArtistas: "+nombres+"\nFecha: "+fecha+"\nMedio: "+medio+"\nDimensiones: "+dimensiones+"\n_______________________________\n")
+        print("- Titulo: "+titulo+"\n- Artistas: "+nombres+"\n- Fecha: "+fecha+"\n- Medio: "+medio+"\n- Dimensiones: "+dimensiones+"\n- Fecha de Adquisicion: "+dateAc+"\n_________________________________________________________________________________________________________________________\n")
 
 
 def printMasNacionalidadTop10(natioNumDict,natioObrasMap):
     i=1
     print("\nEl TOP 10 nacionalidades con mas obras es el siguiente: \n")
-    while i<=11:
+    while i!=11:
         nac,num=lt.getElement(natioNumDict,i)[0],lt.getElement(natioNumDict,i)[1]
-        if nac!="Nationality unknown":
-            if nac=="":
-                nac="Nacionalidad desconocida"
-            print(nac+": "+str(num)+" obras\n")
+        print(nac+": "+str(num)+" obras\n")
         i+=1
+    masNac=lt.getElement(natioNumDict,1)[0]
+    obrasMasNac=me.getValue(mp.get(natioObrasMap,masNac))
+    a=1
+    b=lt.size(obrasMasNac)-2
+    obras=True
+    print("Las primeras y últimas tres obras dentro de ese rango son: \n_________________________________________________________________________________________________________________________\n")
+    while obras:
+        if a!=4:
+            obra=lt.getElement(obrasMasNac,a)
+            a+=1
+        else:
+            obra=lt.getElement(obrasMasNac,b)
+            b+=1
+            if b==lt.size(obrasMasNac)+1:
+                obras=False
+        titulo,date,medio,dimensiones=obra['Title'],obra['Date'],obra['Medium'],obra['Medium']
+        nombresArtista=[]
+        idArtistasActual=obra["ConstituentID"].replace("[","").replace("]","").replace(" ","").split(",")
+        q=0
+        while q!=len(idArtistasActual):
+            nombre=me.getValue(mp.get(catalogo['artistas'],idArtistasActual[q]))['DisplayName']
+            nombresArtista.append(nombre)
+            q+=1
+            nombres=", ".join(nombresArtista)
+        if date=="":
+            date="No se conoce la fecha de creación"
+        if medio=="":
+            medio="No se conoce el medio"
+        if dimensiones=="":
+            dimensiones="No se conocen las dimensiones de la obras"
+        print("- Titulo: "+titulo+"\n- Artistas: "+nombres+"\n- Fecha: "+date+"\n- Medio: "+medio+"\n- Dimensiones: "+dimensiones+"\n_________________________________________________________________________________________________________________________\n")
+
+#Catalogo vacio 
 
 catalogo = None
 
@@ -224,7 +254,9 @@ while True:
         lista=obrasNacionalidades(catalogo)
         printMasNacionalidadTop10(lista[1],lista[0])
     elif int(inputs[0]) == 6:
-        print(catalogo['fechaAdquisicion'])
+        departamento=input("Ingrese el departamento a consultar\n")
+        lista=transportarObrasDepartamento(catalogo,departamento)
+        print(mp.get(catalogo['departamentos'],departamento))
     else:
         sys.exit(0)
 sys.exit(0)
