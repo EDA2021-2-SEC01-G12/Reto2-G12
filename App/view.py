@@ -89,7 +89,7 @@ def printArtistasEnRango(sortedArtist):
         if nacionalidad=="":
             nacionalidad="Desconocida"
         print("Nombre: "+nombre+"\nGenero: "+genero+"\nFecha de nacimiento: "+nacido+"\nNacionalidad: "+nacionalidad+"\nFecha de fallemiento: "+fallece+"\n_______________________________\n")
-'''
+
 def printArtworksResults(sortedArtworks):
     compradas=0
     z=1
@@ -114,18 +114,13 @@ def printArtworksResults(sortedArtworks):
             if j==-1:
                 obras=False
         nombresArtista=[]
-        idArtistasActual=obra["ConstituentID"].replace("["," ").replace("]"," ").replace(","," ,").split(",")
+        idArtistasActual=obra["ConstituentID"].replace("[","").replace("]","").replace(",",",").split(",")
         q=0
         while q!=len(idArtistasActual):
-            g=1
-            while g!=lt.size(ids):
-                iD=lt.getElement(ids,g)[0]
-                name=lt.getElement(ids,g)[1]
-                if iD == idArtistasActual[q]:
-                    nombresArtista.append(name)
-                    nombres = ", ".join(nombresArtista)
-                g+=1
+            nombre=mp.get(catalogo['artistas'],idArtistasActual[q])['value']['DisplayName']
+            nombresArtista.append(nombre)
             q+=1
+            nombres=", ".join(nombresArtista)
         titulo,fecha,medio,dimensiones=obra["Title"],obra["Date"],obra["Medium"],obra["Dimensions"]
         if fecha=="":
             fecha="No se conoce la fecha de creación"
@@ -134,7 +129,7 @@ def printArtworksResults(sortedArtworks):
         if dimensiones=="":
             dimensiones="No se conocen las dimensiones de la obras"
         print("Titulo: "+titulo+"\nArtistas: "+nombres+"\nFecha: "+fecha+"\nMedio: "+medio+"\nDimensiones: "+dimensiones+"\n_______________________________\n")
-'''
+
 
 
 
@@ -218,9 +213,8 @@ while True:
         fecha1=anio1+"-"+mes1+"-"+dia1
         fecha2=anio2+"-"+mes2+"-"+dia2
         obrasSorted=obrasPorDateAcquired(catalogo,fecha1,fecha2)
-        print(obrasSorted)
         print("Entre "+fecha1+" y "+fecha2+" el museo adquirió ",lt.size(obrasSorted)," obras")
-        #printArtworksResults(obrasSorted,catalogo)
+        printArtworksResults(obrasSorted)
     elif int(inputs[0]) == 5:
         #lista=masNacionalidad(catalogo)
         #print(mp.get(catalogo["obras"],"78101"))
