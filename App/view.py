@@ -40,12 +40,23 @@ operación solicitada
 def masNacionalidad(catalogo):
     return controller.masNacionalidad(catalogo)
 
+def obrasNacionalidades(catalogo):
+    return controller.obrasNacionalidades(catalogo)
+
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- Listar obras cuyos autores sean de una nacionalidad especifica")
     print("5- Nacionalidad con mas obras")
 
+def printObrasMasNacionalidad(catalogo):
+    nacionalidades=mp.keySet(catalogo)
+    i=0
+    while i!=lt.size(nacionalidades):
+        nacActual=lt.getElement(nacionalidades,i)
+        num=mp.get(catalogo,nacActual)['value']
+        print("\n"+nacActual+": ",(num))
+        i+=1
 catalogo = None
 
 """
@@ -68,7 +79,10 @@ while True:
         obrasMas=controller.nacionalidadMasObras(catalogo,nac)
         print(obrasMas)
     elif int(inputs[0]) == 5:
-        lista=masNacionalidad(catalogo)
+        #lista=masNacionalidad(catalogo)
+        #print(mp.get(catalogo["obras"],"78101"))
+        lista=obrasNacionalidades(catalogo)
+        #printObrasMasNacionalidad(lista)
         print(lista[1])
     else:
         sys.exit(0)

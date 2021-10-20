@@ -61,25 +61,43 @@ def addArtworks (catalog,artwork):
 
 def addMedium(catalog,artwork):
     med=artwork["Medium"]
-    mp.put(catalog["medio"],med,artwork)
+    if mp.contains(catalog['medio'],med)==False:
+        obras=lt.newList("ARRAY_LIST")
+        lt.addLast(obras,artwork)
+        mp.put(catalog["medio"],med,obras)
+    else:
+        obras=mp.get(catalog['medio'],med)['value']
+        lt.addLast(obras,artwork)
 
 def addNacionality(catalog,artist):
     nat=artist['Nationality']
-    mp.put(catalog["nacionalidad"],nat,artist)
+    if mp.contains(catalog['nacionalidad'],nat)==False:
+        artistas=lt.newList("ARRAY_LIST")
+        lt.addLast(artistas,artist)
+        mp.put(catalog["nacionalidad"],nat,artistas)
+    else:
+        artistas=mp.get(catalog['nacionalidad'],nat)['value']
+        lt.addLast(artistas,artist)
 
 def addArtworkOfArtist(catalog,obra):
     IDs=str(obra["ConstituentID"]).replace("[","").replace("]","").replace(" ","").split(",")
     j=0
     while j!=len(IDs):
-        mp.put(catalog["obrasArtista"],IDs[j],obra)
+        if mp.contains(catalog['obrasArtista'],IDs[j])==False:
+            obras=lt.newList("ARRAY_LIST")
+            lt.addLast(obras,obra)
+            mp.put(catalog["obrasArtista"],IDs[j],obras)
+        else:
+            obras=mp.get(catalog['obrasArtista'],IDs[j])['value']
+            lt.addLast(obras,obra)
         j+=1
 
 
 # Funciones para creacion de datos
 
 # Funciones de consulta   
-
-'''def nacionalidadMasObras(catalogo,nacionalidad):
+'''
+def nacionalidadMasObras(catalogo,nacionalidad):
     obrasMasNacion=lt.newList('ARRAY_LIST')
     authors=catalogo['artistas']
     autoresIDs=mp.keySet(authors)
@@ -129,9 +147,36 @@ def masNacionalidad(catalogo):
     return nacObras,numObras
 '''
 
-def obrasNacionaidades():
-    pass
-
+def obrasNacionalidades(catalogo):
+    autores=catalogo["artistas"]
+    nacionalidades=mp.newMap(maptype="PROBING")
+    obrasArtistas=catalogo["obrasArtista"]
+    idsAutores=mp.keySet(obrasArtistas)
+    i=0
+    while i!=lt.size(idsAutores):
+        autor=lt.getElement(idsAutores,i)
+        nac=mp.get(autores,autor)["value"]["Nationality"]
+        obras=mp.get(obrasArtistas,autor)['value']
+        if mp.contains(nacionalidades,nac)==False:
+            obrasNac=lt.newList("ARRAY_LIST")
+            for a in obras:
+                lt.addLast(obrasNac,a)
+            mp.put(nacionalidades,nac,obrasNac)
+        else:
+            listaDeObras=mp.get(nacionalidades,nac)['value']
+            for b in obras:
+                lt.addLast(listaDeObras,b)
+        i+=1
+    nac=mp.keySet(nacionalidades)
+    j=0
+    masNac=lt.newList("ARRAY_LIST")
+    while j!=lt.size(nac):
+        nacActual=lt.getElement(nac,j)
+        num=lt.size(mp.get(nacionalidades,nacActual)['value'])
+        lt.addLast(masNac,(nacActual,num))
+        j+=1
+    #masNac=ms.sort(masNac)
+    return nacionalidades,masNac
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 

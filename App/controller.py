@@ -61,3 +61,6 @@ def nacionalidadMasObras(catalogo,nacionalidad):
 
 def masNacionalidad(catalogo):
     return model.masNacionalidad(catalogo)
+
+def obrasNacionalidades(catalogo):
+    return model.obrasNacionalidades(catalogo)
