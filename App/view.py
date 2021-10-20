@@ -131,11 +131,16 @@ def printArtworksResults(sortedArtworks):
         print("Titulo: "+titulo+"\nArtistas: "+nombres+"\nFecha: "+fecha+"\nMedio: "+medio+"\nDimensiones: "+dimensiones+"\n_______________________________\n")
 
 
-
-
-
-
-
+def printMasNacionalidadTop10(natioNumDict,natioObrasMap):
+    i=1
+    print("\nEl TOP 10 nacionalidades con mas obras es el siguiente: \n")
+    while i<=11:
+        nac,num=lt.getElement(natioNumDict,i)[0],lt.getElement(natioNumDict,i)[1]
+        if nac!="Nationality unknown":
+            if nac=="":
+                nac="Nacionalidad desconocida"
+            print(nac+": "+str(num)+" obras\n")
+        i+=1
 
 catalogo = None
 
@@ -216,11 +221,8 @@ while True:
         print("Entre "+fecha1+" y "+fecha2+" el museo adquirió ",lt.size(obrasSorted)," obras")
         printArtworksResults(obrasSorted)
     elif int(inputs[0]) == 5:
-        #lista=masNacionalidad(catalogo)
-        #print(mp.get(catalogo["obras"],"78101"))
         lista=obrasNacionalidades(catalogo)
-        #printObrasMasNacionalidad(lista)
-        print(lista[1])
+        printMasNacionalidadTop10(lista[1],lista[0])
     elif int(inputs[0]) == 6:
         print(catalogo['fechaAdquisicion'])
     else:
