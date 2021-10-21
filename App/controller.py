@@ -38,7 +38,7 @@ def initCatalog():
 # Funciones para la carga de datos
 
 def addAuthors(catalog):
-    authorsFile= cf.data_dir + "Artists-utf8-small.csv" 
+    authorsFile= cf.data_dir + "Artists-utf8-large.csv" 
     autFile = csv.DictReader(open(authorsFile, encoding='utf-8'))
     for author in autFile:
         model.addAuthors(catalog,author)
@@ -46,7 +46,7 @@ def addAuthors(catalog):
         model.addArtistByBeginDate(catalog,author)
 
 def addArtworks (catalog):
-    artworksFile = cf.data_dir + "Artworks-utf8-small.csv"
+    artworksFile = cf.data_dir + "Artworks-utf8-large.csv"
     art= csv.DictReader (open(artworksFile, encoding="utf-8"))
     for line in art:
         model.addArtworks(catalog,line)

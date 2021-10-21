@@ -241,9 +241,13 @@ while True:
     elif int(inputs[0]) == 2:
         fechaInicio=int(input("Ingrese la fecha inicial del rango:\n"))
         fechaFin=int(input("Ingrese la fecha final del rango:\n"))
+        start_time = time.process_time()
         lista=artistasNacidosEnRango(catalogo,fechaInicio,fechaFin)
         print("\nEl numero de artistas nacidos en ese rango de fechas son "+str(lt.size(lista))+'\n')
         printArtistasEnRango(lista)
+        stop_time= time.process_time()
+        timeSort= (stop_time-start_time)*1000
+        print(str(timeSort)+'milisegundos')
     elif int(inputs[0]) == 3:
         anioInicio,mesInicio,diaInicio,anioFin,mesFin,diaFin=True,True,True,True,True,True
         print("Ingrese el año inicial en formato de 4 dígitos:")
@@ -296,14 +300,23 @@ while True:
                 diaFin=False
         fecha1=anio1+"-"+mes1+"-"+dia1
         fecha2=anio2+"-"+mes2+"-"+dia2
+        start_time = time.process_time()
         obrasSorted=obrasPorDateAcquired(catalogo,fecha1,fecha2)
         print("Entre "+fecha1+" y "+fecha2+" el museo adquirió ",lt.size(obrasSorted)," obras")
         printArtworksResults(obrasSorted)
+        stop_time= time.process_time()
+        timeSort= (stop_time-start_time)*1000
+        print(str(timeSort)+'milisegundos')
     elif int(inputs[0]) == 5:
+        start_time = time.process_time()
         lista=obrasNacionalidades(catalogo)
         printMasNacionalidadTop10(lista[1],lista[0])
+        stop_time= time.process_time()
+        timeSort= (stop_time-start_time)*1000
+        print(str(timeSort)+'milisegundos')
     elif int(inputs[0]) == 6:
         departamento=input("Ingrese el departamento a consultar\n")
+        start_time = time.process_time()
         lista=transportarObrasDepartamento(catalogo,departamento)
         print("\nEl numero de obras que pertenecen a este departamento son "+str(lt.size(lista[0]))+"\n")
         print("El peso estimado de las obras a transportar es de "+str(lista[1])+" kg\n")
@@ -311,8 +324,11 @@ while True:
         print5ObrasPorFecha(lista[2],catalogo)
         obrasCostosas=precioObrasMasCostosas(catalogo,departamento)
         obrasMasCoste(obrasCostosas,catalogo)
+        stop_time= time.process_time()
+        timeSort= (stop_time-start_time)*1000
+        print(str(timeSort)+'milisegundos')
     elif int(inputs[0]) == 7:
-        pass
+        print(mp.keySet(catalogo['fechaAdquisicion']))
     else:
         sys.exit(0)
 sys.exit(0)
