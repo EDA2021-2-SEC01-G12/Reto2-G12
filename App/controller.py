@@ -73,3 +73,6 @@ def obrasNacionalidades(catalogo):
 
 def transportarObrasDepartamento(catalogo,departamento):
     return model.transportarObrasDepartamento(catalogo,departamento)
+
+def precioObrasMasCostosas(catalogo,departamento):
+    return model.precioObrasMasCostosas(catalogo,departamento)

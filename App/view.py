@@ -50,6 +50,9 @@ def obrasPorDateAcquired(catalogo,fechaInicio,fechaFin):
 def transportarObrasDepartamento(catalogo,departamento):
     return controller.transportarObrasDepartamento(catalogo,departamento)
 
+def precioObrasMasCostosas(catalogo,departamento):
+    return controller.precioObrasMasCostosas(catalogo,departamento)
+
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
@@ -170,6 +173,52 @@ def printMasNacionalidadTop10(natioNumDict,natioObrasMap):
             dimensiones="No se conocen las dimensiones de la obras"
         print("- Titulo: "+titulo+"\n- Artistas: "+nombres+"\n- Fecha: "+date+"\n- Medio: "+medio+"\n- Dimensiones: "+dimensiones+"\n_________________________________________________________________________________________________________________________\n")
 
+def print5ObrasPorFecha(listaOrdenada,catalogo):
+    i=1
+    print("Las 5 obras mas antiguas de este departamento son: \n_________________________________________________________________________________________________________________________\n")
+    while i!=6:
+        obra=lt.getElement(listaOrdenada,i)
+        titulo,clasificacion,fecha,medio,dimensiones,precio=obra['Title'],obra['Classification'],obra['Date'],obra['Medium'],obra['Dimensions'],obra['Precio']
+        nombresArtista=[]
+        idArtistasActual=obra["ConstituentID"].replace("[","").replace("]","").replace(" ","").split(",")
+        q=0
+        while q!=len(idArtistasActual):
+            nombre=me.getValue(mp.get(catalogo['artistas'],idArtistasActual[q]))['DisplayName']
+            nombresArtista.append(nombre)
+            q+=1
+            nombres=", ".join(nombresArtista)
+        if fecha=="":
+            fecha="No se conoce la fecha de creación"
+        if medio=="":
+            medio="No se conoce el medio"
+        if dimensiones=="":
+            dimensiones="No se conocen las dimensiones de la obras"
+        print("- Titulo: "+titulo+"\n- Artistas: "+nombres+"\n- Clasificacion: "+clasificacion+"\n- Fecha: "+fecha+"\n- Medio: "+medio+"\n- Dimensiones: "+dimensiones+"\n- Costo de transporte: "+str(precio)+"\n_________________________________________________________________________________________________________________________\n")
+        i+=1
+
+def obrasMasCoste(precios,catalogo):
+    j=1
+    print("Las 5 obras de este departamento mas costosas para transportar son: \n_________________________________________________________________________________________________________________________\n")
+    while j!=6:
+        obra=lt.getElement(precios,j)
+        titulo,clasificacion,fecha,medio,dimensiones,precio=obra['Title'],obra['Classification'],obra['Date'],obra['Medium'],obra['Dimensions'],obra['Precio']
+        nombresArtista=[]
+        idArtistasActual=obra["ConstituentID"].replace("[","").replace("]","").replace(" ","").split(",")
+        a=0
+        while a!=len(idArtistasActual):
+            nombre=me.getValue(mp.get(catalogo['artistas'],idArtistasActual[a]))['DisplayName']
+            nombresArtista.append(nombre)
+            a+=1
+            nombres=", ".join(nombresArtista)
+        if fecha=="":
+            fecha="No se conoce la fecha de creación"
+        if medio=="":
+            medio="No se conoce el medio"
+        if dimensiones=="":
+            dimensiones="No se conocen las dimensiones de la obras"
+        print("- Titulo: "+titulo+"\n- Artistas: "+nombres+"\n- Clasificacion: "+clasificacion+"\n- Fecha: "+fecha+"\n- Medio: "+medio+"\n- Dimensiones: "+dimensiones+"\n- Costo de transporte: "+str(precio)+"\n_________________________________________________________________________________________________________________________\n")
+        j+=1
+
 #Catalogo vacio 
 
 catalogo = None
@@ -256,7 +305,14 @@ while True:
     elif int(inputs[0]) == 6:
         departamento=input("Ingrese el departamento a consultar\n")
         lista=transportarObrasDepartamento(catalogo,departamento)
-        print(mp.get(catalogo['departamentos'],departamento))
+        print("\nEl numero de obras que pertenecen a este departamento son "+str(lt.size(lista[0]))+"\n")
+        print("El peso estimado de las obras a transportar es de "+str(lista[1])+" kg\n")
+        print("El costo estimado para transportar las obras es de "+str(round(lista[3],3))+" dolares\n")
+        print5ObrasPorFecha(lista[2],catalogo)
+        obrasCostosas=precioObrasMasCostosas(catalogo,departamento)
+        obrasMasCoste(obrasCostosas,catalogo)
+    elif int(inputs[0]) == 7:
+        pass
     else:
         sys.exit(0)
 sys.exit(0)

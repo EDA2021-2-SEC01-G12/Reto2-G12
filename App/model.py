@@ -191,7 +191,170 @@ def obrasNacionalidades(catalogo):
     return nacionalidades,natioNum
 
 def transportarObrasDepartamento(catalogo,departamento):
-    pass
+    depart=me.getValue(mp.get(catalogo['departamentos'],departamento))
+    pesoTotal=0
+    precioTotal=0
+    obrasFechaOrdenada=ms.sort(depart,cmpFechaObras)
+    for obra in lt.iterator(depart):
+        peso=obra['Weight (kg)']
+        if peso!="":
+            pesoTotal+=float(peso)
+        precioIndividual=precioObra(obra)
+        obra['Precio']=precioIndividual
+        precioTotal+=precioIndividual
+    return depart,pesoTotal,obrasFechaOrdenada,precioTotal
+
+def precioObrasMasCostosas(catalogo,departamento):
+    depart=me.getValue(mp.get(catalogo['departamentos'],departamento))
+    for obra in lt.iterator(depart):
+        precioIndividual=precioObra(obra)
+        obra['Precio']=precioIndividual
+    obrasOrdenadasPrecio=ms.sort(depart,cmpPrecio)
+    return obrasOrdenadasPrecio
+
+
+def precioObra(obra):
+    pi=3.14159265359
+    precio=0
+    volumenObra=0
+    areaObra=0
+    profun=(obra['Depth (cm)'])
+    diam=(obra['Diameter (cm)'])
+    alto=(obra['Height (cm)'])
+    largo=(obra['Length (cm)'])
+    ancho=(obra['Width (cm)'])
+    peso=(obra['Weight (kg)'])
+
+    if profun=="0":
+        profun=""
+    if diam=="0":
+        diam=""
+    if alto=="0":
+        alto=""
+    if largo=="0":
+        largo=""
+    if ancho=="0":
+        ancho=""
+    if peso=="0":
+        peso=""
+
+    if profun!="":
+        profun=float(profun)/100
+    if diam!="":
+        diam=float(diam)/100
+    if alto!="":
+        alto=float(alto)/100
+    if largo!="":
+        largo=float(largo)/100
+    if ancho!="":
+        ancho=float(ancho)/100
+    
+    if peso!="":
+        precio+=float(peso)*72
+
+    if diam!="":
+        r=float(diam)/2
+        if alto!="":
+            vol=pi*(r**2)*float(alto)
+            if volumenObra==0:
+                volumenObra=round(vol,3)*72
+            else:
+                if volumenObra<vol*72:
+                    volumenObra=vol*72
+        elif ancho!="":
+            vol=pi*(r**2)*float(ancho)
+            if volumenObra==0:
+                volumenObra=round(vol,3)*72
+            else:
+                if volumenObra<vol*72:
+                    volumenObra=round(vol,3)*72
+        elif largo!="":
+            vol=pi*(r**2)*float(largo)
+            if volumenObra==0:
+                volumenObra=round(vol,3)*72
+            else:
+                if volumenObra<vol*72:
+                    volumenObra=round(vol,3)*72
+        else:
+            ar=pi*(r**2)
+            if areaObra==0:
+                areaObra+=round(ar,3)*72
+            else:
+                if areaObra<ar*72:
+                    areaObra+=round(ar,3)*72
+
+    if profun!="" and largo=="":
+        if alto!="" and ancho!="":
+            vol=float(alto)*float(ancho)*float(profun)
+            if volumenObra==0:
+                volumenObra=round(vol,3)*72
+            else:
+                if volumenObra<vol*72:
+                    volumenObra=round(vol,3)*72
+
+    if largo!="" and profun=="":
+        if alto!="" and ancho!="":
+            vol=float(alto)*float(ancho)*float(largo)
+            if volumenObra==0:
+                volumenObra=round(vol,3)*72
+            else:
+                if volumenObra<vol*72:
+                    volumenObra=round(vol,3)*72 
+
+    if profun!="" and largo!="" and alto!="" and ancho!="":
+        if float(profun)>float(largo):
+            vol=float(alto)*float(ancho)*float(profun)
+            if volumenObra==0:
+                volumenObra=round(vol,3)*72
+            else:
+                if volumenObra<vol*72:
+                    volumenObra=round(vol,3)*72
+        else:
+            vol=float(alto)*float(ancho)*float(largo)
+            if volumenObra==0:
+                volumenObra=round(vol,3)*72
+            else:
+                if volumenObra<vol*72:
+                    volumenObra=round(vol,3)*72
+
+    if alto!="" and ancho!="":
+        area=float(alto)*float(ancho)
+        if areaObra==0:
+                areaObra=round(area,3)*72
+        else:
+            if areaObra<area*72:
+                areaObra=round(area,3)*72 
+
+    if largo!="" and ancho!="":
+        area=float(largo)*float(ancho)
+        if areaObra==0:
+                areaObra=round(area,3)*72
+        else:
+            if areaObra<area*72:
+                areaObra=round(area,3)*72 
+
+    if largo!="" and alto!="":
+        area=float(largo)*float(alto)
+        if areaObra==0:
+                areaObra=round(area,3)*72
+        else:
+            if areaObra<area*72:
+                areaObra=round(area,3)*72 
+
+    if areaObra==0 and volumenObra==0 and peso=="":
+        return 48
+    else:
+        if areaObra!=0 and volumenObra!=0:
+            precio+=volumenObra
+        elif areaObra!=0 and volumenObra==0:
+            precio+=areaObra
+        elif areaObra==0 and volumenObra!=0:
+            precio+=volumenObra
+
+    return precio
+
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -240,6 +403,28 @@ def cmpObrasPorTitulo(obra1,obra2):
     obra1Titulo=obra1['Title']
     obra2Titulo=obra2['Title']
     if obra1Titulo < obra2Titulo:
+        return True
+    else:
+        return False
+
+def cmpFechaObras(obra1,obra2):
+    if obra1['Date']=="":
+        fecha1=9999
+    else:
+        fecha1=int(obra1['Date'])
+    if obra2['Date']=="":
+        fecha2=9999
+    else:
+        fecha2=int(obra2['Date'])
+    if fecha1<fecha2:
+        return True
+    else:
+        return False
+
+def cmpPrecio(ob1,ob2):
+    precio1=float(ob1['Precio'])
+    precio2=float(ob2['Precio'])
+    if precio1>precio2:
         return True
     else:
         return False
